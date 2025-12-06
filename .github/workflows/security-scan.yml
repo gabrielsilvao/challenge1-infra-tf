@@ -20,18 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: tfsec
+      - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: aws/terraform
-          format: sarif
           soft_fail: true
-
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: results.sarif
 
   checkov:
     name: Checkov Analysis
@@ -46,16 +39,9 @@ jobs:
         with:
           directory: aws/terraform
           framework: terraform
-          output_format: cli,sarif
-          output_file_path: console,checkov-results.sarif
+          output_format: cli
           soft_fail: true
           skip_check: CKV_AWS_144,CKV_AWS_145,CKV2_AWS_62
-
-      - name: Upload Checkov SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: checkov-results.sarif
 
   trivy:
     name: Trivy IaC Scan
@@ -70,16 +56,9 @@ jobs:
         with:
           scan-type: 'config'
           scan-ref: 'aws/terraform'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: 'table'
           exit-code: '0'
           severity: 'CRITICAL,HIGH,MEDIUM'
-
-      - name: Upload Trivy SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: trivy-results.sarif
 
   terrascan:
     name: Terrascan Analysis
@@ -96,13 +75,6 @@ jobs:
           iac_dir: 'aws/terraform'
           policy_type: 'aws'
           only_warn: true
-          sarif_upload: true
-
-      - name: Upload Terrascan SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: terrascan.sarif
 
   summary:
     name: Security Summary
@@ -122,4 +94,4 @@ jobs:
           echo "| Trivy | ${{ needs.trivy.result == 'success' && '✅ Passed' || '⚠️ Issues Found' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Terrascan | ${{ needs.terrascan.result == 'success' && '✅ Passed' || '⚠️ Issues Found' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the **Security** tab for detailed findings." >> $GITHUB_STEP_SUMMARY
+          echo "View detailed output in each job's logs." >> $GITHUB_STEP_SUMMARY
