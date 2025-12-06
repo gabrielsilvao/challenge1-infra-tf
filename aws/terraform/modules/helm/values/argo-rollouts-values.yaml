@@ -1,0 +1,15 @@
+replicaCount: 2
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true
+
+dashboard:
+  enabled: true
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false

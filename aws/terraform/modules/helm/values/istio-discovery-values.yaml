@@ -1,0 +1,10 @@
+pilot:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+global:
+  istio_cni:
+    enabled: false
