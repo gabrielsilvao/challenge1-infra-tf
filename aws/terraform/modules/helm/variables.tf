@@ -38,3 +38,9 @@ variable "kong_chart_version" {
   type        = string
   default     = "2.33.0"
 }
+
+variable "metrics_server_chart_version" {
+  description = "Metrics Server Helm chart version"
+  type        = string
+  default     = "3.12.0"
+}

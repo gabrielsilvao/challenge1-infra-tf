@@ -27,3 +27,8 @@ output "kong_release_status" {
   description = "Status of the Kong Helm release"
   value       = helm_release.kong.status
 }
+
+output "metrics_server_release_status" {
+  description = "Status of the Metrics Server Helm release"
+  value       = helm_release.metrics_server.status
+}
