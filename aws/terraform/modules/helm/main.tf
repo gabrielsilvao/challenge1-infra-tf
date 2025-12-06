@@ -160,7 +160,8 @@ resource "helm_release" "datadog" {
   namespace        = kubernetes_namespace.datadog[0].metadata[0].name
   create_namespace = false
   version          = var.datadog_chart_version
-  timeout          = 600
+  timeout          = 900
+  wait             = false # Don't wait for pods to be ready (API key validation may delay startup)
 
   set {
     name  = "datadog.apiKey"
