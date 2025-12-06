@@ -33,3 +33,77 @@ variable "single_nat_gateway" {
   type        = bool
   default     = true
 }
+
+# EKS Variables
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+  default     = "eks-cluster"
+}
+
+variable "cluster_version" {
+  description = "Kubernetes version to use for the EKS cluster"
+  type        = string
+  default     = "1.27"
+}
+
+variable "instance_type" {
+  description = "EC2 instance type for worker nodes"
+  type        = string
+  default     = "t3.medium"
+}
+
+variable "min_size" {
+  description = "Minimum number of worker nodes"
+  type        = number
+  default     = 2
+}
+
+variable "max_size" {
+  description = "Maximum number of worker nodes"
+  type        = number
+  default     = 4
+}
+
+variable "desired_size" {
+  description = "Desired number of worker nodes"
+  type        = number
+  default     = 2
+}
+
+# Helm Addons Variables
+variable "argocd_namespace" {
+  description = "Kubernetes namespace for ArgoCD"
+  type        = string
+  default     = "argocd"
+}
+
+variable "argocd_chart_version" {
+  description = "ArgoCD Helm chart version"
+  type        = string
+  default     = "5.46.0"
+}
+
+variable "argo_rollouts_namespace" {
+  description = "Kubernetes namespace for Argo Rollouts"
+  type        = string
+  default     = "argo-rollouts"
+}
+
+variable "argo_rollouts_chart_version" {
+  description = "Argo Rollouts Helm chart version"
+  type        = string
+  default     = "2.32.0"
+}
+
+variable "istio_namespace" {
+  description = "Kubernetes namespace for Istio"
+  type        = string
+  default     = "istio-system"
+}
+
+variable "istio_chart_version" {
+  description = "Istio Helm chart version"
+  type        = string
+  default     = "1.18.0"
+}
