@@ -9,6 +9,9 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     environment: production
+    defaults:
+      run:
+        working-directory: aws/terraform
 
     steps:
       - name: Checkout
@@ -25,6 +28,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.5.7'
+
 
       - name: Terraform Init
         run: terraform init -input=false
@@ -47,8 +51,8 @@ jobs:
         with:
           name: terraform-apply-outputs
           path: |
-            .terraform
-            tfplan
+            aws/terraform/.terraform
+            aws/terraform/tfplan
 
 # IMPORTANT:
 # - This workflow will run `terraform apply -auto-approve` on pushes to `main`.

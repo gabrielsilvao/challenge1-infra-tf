@@ -8,6 +8,9 @@ jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aws/terraform
 
     steps:
       - name: Checkout
@@ -44,5 +47,5 @@ jobs:
         with:
           name: tfplan-dev
           path: |
-            tfplan
-            tfplan.json
+            aws/terraform/tfplan
+            aws/terraform/tfplan.json
