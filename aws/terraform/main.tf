@@ -38,12 +38,12 @@ module "helm_addons" {
 
   cluster_id = module.eks.cluster_id
 
-  argocd_namespace              = var.argocd_namespace
-  argocd_chart_version          = var.argocd_chart_version
-  argo_rollouts_namespace       = var.argo_rollouts_namespace
-  argo_rollouts_chart_version   = var.argo_rollouts_chart_version
-  istio_namespace               = var.istio_namespace
-  istio_chart_version           = var.istio_chart_version
+  argocd_namespace            = var.argocd_namespace
+  argocd_chart_version        = var.argocd_chart_version
+  argo_rollouts_namespace     = var.argo_rollouts_namespace
+  argo_rollouts_chart_version = var.argo_rollouts_chart_version
+  istio_namespace             = var.istio_namespace
+  istio_chart_version         = var.istio_chart_version
 
   depends_on = [module.eks]
 }
