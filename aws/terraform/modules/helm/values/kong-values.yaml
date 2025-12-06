@@ -1,0 +1,87 @@
+# Kong Ingress Controller values
+# Docs: https://github.com/Kong/charts/blob/main/charts/kong/values.yaml
+
+replicaCount: 1
+
+image:
+  repository: kong
+  tag: "3.5"
+
+# Datadog annotations for metrics and logs collection
+podAnnotations:
+  ad.datadoghq.com/proxy.logs: '[{"source":"kong","service":"kong-proxy"}]'
+  ad.datadoghq.com/proxy.checks: |
+    {
+      "kong": {
+        "instances": [
+          {
+            "openmetrics_endpoint": "http://%%host%%:8001/metrics"
+          }
+        ]
+      }
+    }
+  ad.datadoghq.com/ingress-controller.logs: '[{"source":"kong","service":"kong-ingress-controller"}]'
+
+env:
+  database: "off"
+  router_flavor: traditional
+  nginx_worker_processes: "2"
+  proxy_access_log: /dev/stdout
+  admin_access_log: /dev/stdout
+  admin_gui_access_log: /dev/stdout
+  portal_api_access_log: /dev/stdout
+  proxy_error_log: /dev/stderr
+  admin_error_log: /dev/stderr
+  admin_gui_error_log: /dev/stderr
+  portal_api_error_log: /dev/stderr
+  # Enable status endpoint for Datadog metrics
+  status_listen: "0.0.0.0:8100"
+
+ingressController:
+  enabled: true
+  installCRDs: false
+  env:
+    kong_admin_token:
+      valueFrom:
+        secretKeyRef:
+          name: kong-config-secret
+          key: admin_token
+          optional: true
+
+proxy:
+  enabled: true
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+
+admin:
+  enabled: true
+  type: ClusterIP
+  http:
+    enabled: true
+    servicePort: 8001
+    containerPort: 8001
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+
+podDisruptionBudget:
+  enabled: false

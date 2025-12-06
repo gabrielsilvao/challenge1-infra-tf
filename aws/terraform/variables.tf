@@ -44,7 +44,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "Kubernetes version to use for the EKS cluster"
   type        = string
-  default     = "1.27"
+  default     = "1.33"
 }
 
 variable "instance_type" {
@@ -96,14 +96,41 @@ variable "argo_rollouts_chart_version" {
   default     = "2.32.0"
 }
 
-variable "istio_namespace" {
-  description = "Kubernetes namespace for Istio"
+variable "kong_namespace" {
+  description = "Kubernetes namespace for Kong"
   type        = string
-  default     = "istio-system"
+  default     = "kong"
 }
 
-variable "istio_chart_version" {
-  description = "Istio Helm chart version"
+variable "kong_chart_version" {
+  description = "Kong Helm chart version"
   type        = string
-  default     = "1.18.0"
+  default     = "2.33.0"
+}
+
+# ECR Variables
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+  default     = "sample-web-app"
+}
+
+# Datadog Variables
+variable "datadog_enabled" {
+  description = "Enable Datadog Operator installation"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_api_key" {
+  description = "Datadog API Key (sensitive - use TF_VAR_datadog_api_key or GitHub secret)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "datadog_site" {
+  description = "Datadog site (datadoghq.com, datadoghq.eu, us5.datadoghq.com, etc.)"
+  type        = string
+  default     = "us5.datadoghq.com"
 }

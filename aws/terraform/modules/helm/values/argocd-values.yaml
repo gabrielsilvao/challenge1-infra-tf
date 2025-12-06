@@ -1,10 +1,27 @@
 global:
   domain: argocd.example.com
+  # Datadog pod annotations for all ArgoCD components
+  podAnnotations:
+    ad.datadoghq.com/tags: '{"env":"production","service":"argocd"}'
 
 server:
   insecure: true
   service:
     type: LoadBalancer
+  # Datadog annotations for ArgoCD Server
+  podAnnotations:
+    ad.datadoghq.com/argocd-server.logs: '[{"source":"argocd","service":"argocd-server"}]'
+    ad.datadoghq.com/argocd-server.checks: |
+      {
+        "argocd": {
+          "instances": [
+            {
+              "app_controller_endpoint": "http://%%host%%:8082/metrics",
+              "api_server_endpoint": "http://%%host%%:8083/metrics"
+            }
+          ]
+        }
+      }
 
 configs:
   params:
@@ -12,13 +29,33 @@ configs:
 
 redis:
   enabled: true
+  # Datadog annotations for Redis (container name is 'redis')
+  podAnnotations:
+    ad.datadoghq.com/redis.logs: '[{"source":"redis","service":"argocd-redis"}]'
 
 controller:
   replicas: 2
+  # Datadog annotations for ArgoCD Controller (container name is 'application-controller')
+  podAnnotations:
+    ad.datadoghq.com/application-controller.logs: '[{"source":"argocd","service":"argocd-controller"}]'
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
 
 repoServer:
   replicas: 2
+  # Datadog annotations for Repo Server (container name is 'repo-server')
+  podAnnotations:
+    ad.datadoghq.com/repo-server.logs: '[{"source":"argocd","service":"argocd-repo-server"}]'
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
 
 applicationSet:
   enabled: true
   replicas: 2
+  # Datadog annotations for ApplicationSet Controller (container name is 'applicationset-controller')
+  podAnnotations:
+    ad.datadoghq.com/applicationset-controller.logs: '[{"source":"argocd","service":"argocd-applicationset"}]'

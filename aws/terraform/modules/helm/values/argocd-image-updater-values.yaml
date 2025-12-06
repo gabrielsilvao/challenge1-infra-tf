@@ -1,0 +1,69 @@
+# Argo CD Image Updater Configuration
+# https://argocd-image-updater.readthedocs.io/
+
+replicaCount: 1
+
+image:
+  repository: quay.io/argoprojlabs/argocd-image-updater
+  pullPolicy: IfNotPresent
+  tag: ""  # Uses chart default
+
+# ArgoCD configuration
+config:
+  # ArgoCD server address (internal service)
+  argocd:
+    grpcWeb: true
+    serverAddress: "argocd-server.argocd.svc.cluster.local"
+    insecure: true
+    plaintext: true
+
+  # Log level
+  logLevel: info
+
+  # Registries configuration
+  registries:
+    - name: ECR
+      api_url: https://${aws_region}.amazonaws.com
+      prefix: "*.dkr.ecr.${aws_region}.amazonaws.com"
+      credentials: ext:/scripts/ecr-login.sh
+      credsexpire: 10h
+
+# Additional volumes for ECR login script
+extraVolumes:
+  - name: ecr-login-script
+    configMap:
+      name: argocd-image-updater-ecr-login
+      defaultMode: 0755
+
+extraVolumeMounts:
+  - name: ecr-login-script
+    mountPath: /scripts
+
+# Service account with IRSA for ECR access
+serviceAccount:
+  create: true
+  annotations:
+    # This will be populated by IRSA if configured
+    # eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/argocd-image-updater-role
+  name: argocd-image-updater
+
+# Resources
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Metrics for monitoring
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+
+# Pod security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000

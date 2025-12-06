@@ -96,9 +96,9 @@ output "helm_argo_rollouts_namespace" {
   value       = module.helm_addons.argo_rollouts_namespace
 }
 
-output "helm_istio_namespace" {
-  description = "Kubernetes namespace where Istio is installed"
-  value       = module.helm_addons.istio_namespace
+output "helm_kong_namespace" {
+  description = "Kubernetes namespace where Kong is installed"
+  value       = module.helm_addons.kong_namespace
 }
 
 output "helm_argocd_status" {
@@ -111,7 +111,23 @@ output "helm_argo_rollouts_status" {
   value       = module.helm_addons.argo_rollouts_release_status
 }
 
-output "helm_istio_status" {
-  description = "Status of the Istio Helm releases"
-  value       = module.helm_addons.istio_release_status
+output "helm_kong_status" {
+  description = "Status of the Kong Helm release"
+  value       = module.helm_addons.kong_release_status
+}
+
+# ECR Outputs
+output "ecr_repository_url" {
+  description = "The URL of the ECR repository"
+  value       = module.ecr.repository_url
+}
+
+output "ecr_repository_arn" {
+  description = "The ARN of the ECR repository"
+  value       = module.ecr.repository_arn
+}
+
+output "ecr_repository_name" {
+  description = "The name of the ECR repository"
+  value       = module.ecr.repository_name
 }

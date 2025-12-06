@@ -1,5 +1,14 @@
 terraform {
   required_version = ">= 1.0.0"
+
+  backend "s3" {
+    bucket         = "tf-challenge-backend"
+    key            = "infrastructure/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -27,7 +36,7 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_id, "--region", var.region]
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, "--region", var.region]
   }
 }
 
@@ -39,7 +48,7 @@ provider "helm" {
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
-      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_id, "--region", var.region]
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, "--region", var.region]
     }
   }
 }
