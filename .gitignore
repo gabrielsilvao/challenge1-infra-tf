@@ -1,4 +1,29 @@
-aws/terraform/backend/*.tfstate
-aws/terraform/backend/*.tfstate.backup
-aws/terraform/backend/.terraform/
-aws/terraform/backend/.terraform.lock.hcl
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+!example.tfvars
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
