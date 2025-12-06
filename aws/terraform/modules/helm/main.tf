@@ -69,12 +69,12 @@ resource "helm_release" "kong" {
 
 # Metrics Server for HPA
 resource "helm_release" "metrics_server" {
-  name             = "metrics-server"
-  repository       = "https://kubernetes-sigs.github.io/metrics-server/"
-  chart            = "metrics-server"
-  namespace        = "kube-system"
-  version          = var.metrics_server_chart_version
-  timeout          = 300
+  name       = "metrics-server"
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  namespace  = "kube-system"
+  version    = var.metrics_server_chart_version
+  timeout    = 300
 
   set {
     name  = "args[0]"
@@ -114,10 +114,10 @@ resource "kubernetes_config_map" "ecr_login_script" {
   }
 
   data = {
-    "ecr-login.sh" = <<-EOF
-    #!/bin/sh
-    aws ecr get-login-password --region ${var.aws_region}
-    EOF
+    "ecr-login.sh" = <<-EOT
+#!/bin/sh
+aws ecr get-login-password --region ${var.aws_region}
+EOT
   }
 
   depends_on = [kubernetes_namespace.argocd]
