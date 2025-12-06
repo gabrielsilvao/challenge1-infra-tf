@@ -10,13 +10,9 @@ resource "kubernetes_namespace" "argo_rollouts" {
   }
 }
 
-resource "kubernetes_namespace" "istio" {
+resource "kubernetes_namespace" "kong" {
   metadata {
-    name = var.istio_namespace
-
-    labels = {
-      "istio-injection" = "enabled"
-    }
+    name = var.kong_namespace
   }
 }
 
@@ -54,49 +50,19 @@ resource "helm_release" "argo_rollouts" {
   depends_on = [kubernetes_namespace.argo_rollouts]
 }
 
-# Istio Helm Release
-resource "helm_release" "istio_base" {
-  name             = "istio-base"
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  chart            = "base"
-  namespace        = kubernetes_namespace.istio.metadata[0].name
+# Kong Ingress Controller Helm Release
+resource "helm_release" "kong" {
+  name             = "kong"
+  repository       = "https://charts.konghq.com"
+  chart            = "kong"
+  namespace        = kubernetes_namespace.kong.metadata[0].name
   create_namespace = false
-  version          = var.istio_chart_version
-  timeout          = 300
-
-  depends_on = [kubernetes_namespace.istio]
-}
-
-resource "helm_release" "istio_discovery" {
-  name             = "istiod"
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  chart            = "istiod"
-  namespace        = kubernetes_namespace.istio.metadata[0].name
-  create_namespace = false
-  version          = var.istio_chart_version
+  version          = var.kong_chart_version
   timeout          = 600
 
   values = [
-    templatefile("${path.module}/values/istio-discovery-values.yaml", {})
+    templatefile("${path.module}/values/kong-values.yaml", {})
   ]
 
-  depends_on = [helm_release.istio_base, kubernetes_namespace.istio]
-}
-
-resource "helm_release" "istio_ingress" {
-  name             = "istio-ingressgateway"
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  chart            = "gateway"
-  namespace        = kubernetes_namespace.istio.metadata[0].name
-  create_namespace = false
-  version          = var.istio_chart_version
-  timeout          = 600
-  wait             = true
-  wait_for_jobs    = true
-
-  values = [
-    templatefile("${path.module}/values/istio-ingress-values.yaml", {})
-  ]
-
-  depends_on = [helm_release.istio_discovery]
+  depends_on = [kubernetes_namespace.kong]
 }

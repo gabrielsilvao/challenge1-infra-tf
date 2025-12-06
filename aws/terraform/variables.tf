@@ -96,16 +96,16 @@ variable "argo_rollouts_chart_version" {
   default     = "2.32.0"
 }
 
-variable "istio_namespace" {
-  description = "Kubernetes namespace for Istio"
+variable "kong_namespace" {
+  description = "Kubernetes namespace for Kong"
   type        = string
-  default     = "istio-system"
+  default     = "kong"
 }
 
-variable "istio_chart_version" {
-  description = "Istio Helm chart version"
+variable "kong_chart_version" {
+  description = "Kong Helm chart version"
   type        = string
-  default     = "1.18.0"
+  default     = "2.33.0"
 }
 
 # ECR Variables
