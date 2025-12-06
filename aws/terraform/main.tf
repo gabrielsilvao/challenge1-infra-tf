@@ -44,6 +44,7 @@ module "helm_addons" {
   argo_rollouts_chart_version = var.argo_rollouts_chart_version
   kong_namespace              = var.kong_namespace
   kong_chart_version          = var.kong_chart_version
+  aws_region                  = var.aws_region
 
   depends_on = [module.eks]
 }

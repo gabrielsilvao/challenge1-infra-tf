@@ -44,3 +44,15 @@ variable "metrics_server_chart_version" {
   type        = string
   default     = "3.12.0"
 }
+
+variable "argocd_image_updater_chart_version" {
+  description = "Argo CD Image Updater Helm chart version"
+  type        = string
+  default     = "0.9.6"
+}
+
+variable "aws_region" {
+  description = "AWS region for ECR"
+  type        = string
+  default     = "us-east-1"
+}

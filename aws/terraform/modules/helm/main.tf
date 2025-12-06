@@ -86,3 +86,39 @@ resource "helm_release" "metrics_server" {
     value = "--kubelet-preferred-address-types=InternalIP"
   }
 }
+
+# Argo CD Image Updater
+resource "helm_release" "argocd_image_updater" {
+  name             = "argocd-image-updater"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argocd-image-updater"
+  namespace        = kubernetes_namespace.argocd.metadata[0].name
+  create_namespace = false
+  version          = var.argocd_image_updater_chart_version
+  timeout          = 300
+
+  values = [
+    templatefile("${path.module}/values/argocd-image-updater-values.yaml", {
+      aws_region = var.aws_region
+    })
+  ]
+
+  depends_on = [helm_release.argocd, kubernetes_config_map.ecr_login_script]
+}
+
+# ConfigMap for ECR login script
+resource "kubernetes_config_map" "ecr_login_script" {
+  metadata {
+    name      = "argocd-image-updater-ecr-login"
+    namespace = kubernetes_namespace.argocd.metadata[0].name
+  }
+
+  data = {
+    "ecr-login.sh" = <<-EOF
+      #!/bin/sh
+      aws ecr get-login-password --region ${var.aws_region}
+    EOF
+  }
+
+  depends_on = [kubernetes_namespace.argocd]
+}
