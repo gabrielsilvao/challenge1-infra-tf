@@ -59,11 +59,11 @@ resource "aws_route_table_association" "public_assoc" {
 
 # Single EIP + NAT Gateway (placed in the first public subnet)
 resource "aws_eip" "nat" {
-  domain = "vpc"
-
   tags = {
     Name = "nat-eip"
   }
+
+  depends_on = [aws_internet_gateway.igw]
 }
 
 resource "aws_nat_gateway" "nat" {
