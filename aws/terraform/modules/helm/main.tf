@@ -2,16 +2,12 @@ resource "kubernetes_namespace" "argocd" {
   metadata {
     name = var.argocd_namespace
   }
-
-  depends_on = [var.cluster_id]
 }
 
 resource "kubernetes_namespace" "argo_rollouts" {
   metadata {
     name = var.argo_rollouts_namespace
   }
-
-  depends_on = [var.cluster_id]
 }
 
 resource "kubernetes_namespace" "istio" {
@@ -22,8 +18,6 @@ resource "kubernetes_namespace" "istio" {
       "istio-injection" = "enabled"
     }
   }
-
-  depends_on = [var.cluster_id]
 }
 
 # ArgoCD Helm Release
