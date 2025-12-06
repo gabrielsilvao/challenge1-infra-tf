@@ -15,7 +15,7 @@ podAnnotations:
       "kong": {
         "instances": [
           {
-            "openmetrics_endpoint": "http://%%host%%:8100/metrics"
+            "openmetrics_endpoint": "http://%%host%%:8001/metrics"
           }
         ]
       }
