@@ -49,8 +49,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-variable "vpc_module_id" {
-  description = "VPC module ID for dependency management"
-  type        = string
-}

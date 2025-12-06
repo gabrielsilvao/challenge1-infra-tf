@@ -32,8 +32,4 @@ module "eks" {
   }
 
   tags = var.tags
-
-  depends_on = [
-    var.vpc_module_id
-  ]
 }

@@ -27,8 +27,6 @@ module "eks" {
   max_size      = var.max_size
   desired_size  = var.desired_size
 
-  vpc_module_id = module.vpc.vpc_id
-
   tags = {
     Environment = "dev"
     Terraform   = "true"
