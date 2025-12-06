@@ -20,7 +20,7 @@ module "eks" {
   cluster_version = var.cluster_version
 
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = concat(module.vpc.public_subnets, module.vpc.private_subnets)
+  subnet_ids = module.vpc.private_subnets
 
   instance_type = var.instance_type
   min_size      = var.min_size
@@ -36,7 +36,7 @@ module "eks" {
 module "helm_addons" {
   source = "./modules/helm"
 
-  cluster_id = module.eks.cluster_id
+  cluster_id = module.eks.cluster_name
 
   argocd_namespace            = var.argocd_namespace
   argocd_chart_version        = var.argocd_chart_version
