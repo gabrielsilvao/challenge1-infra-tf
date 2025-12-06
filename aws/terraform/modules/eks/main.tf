@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 18.2"
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
@@ -26,9 +26,6 @@ module "eks" {
       instance_types = [var.instance_type]
 
       disk_size = 30
-
-      # Disable CNI IAM attachment to avoid for_each circular dependency
-      iam_role_attach_cni_policy = false
 
       tags = var.tags
     }
