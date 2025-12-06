@@ -46,7 +46,9 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = { Name = "rt-public" }
+  tags = {
+    Name = "rt-public"
+  }
 }
 
 resource "aws_route_table_association" "public_assoc" {
@@ -57,9 +59,11 @@ resource "aws_route_table_association" "public_assoc" {
 
 # Single EIP + NAT Gateway (placed in the first public subnet)
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 
-  tags = { Name = "nat-eip" }
+  tags = {
+    Name = "nat-eip"
+  }
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -68,7 +72,9 @@ resource "aws_nat_gateway" "nat" {
 
   depends_on = [aws_internet_gateway.igw]
 
-  tags = { Name = "nat-gw" }
+  tags = {
+    Name = "nat-gw"
+  }
 }
 
 resource "aws_route_table" "private" {
@@ -79,7 +85,9 @@ resource "aws_route_table" "private" {
     nat_gateway_id = aws_nat_gateway.nat.id
   }
 
-  tags = { Name = "rt-private" }
+  tags = {
+    Name = "rt-private"
+  }
 }
 
 resource "aws_route_table_association" "private_assoc" {
