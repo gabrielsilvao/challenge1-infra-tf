@@ -56,3 +56,41 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1"
 }
+
+# Datadog Variables
+variable "datadog_enabled" {
+  description = "Enable Datadog Operator installation"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_namespace" {
+  description = "Kubernetes namespace for Datadog"
+  type        = string
+  default     = "datadog"
+}
+
+variable "datadog_operator_chart_version" {
+  description = "Datadog Operator Helm chart version"
+  type        = string
+  default     = "1.4.0"
+}
+
+variable "datadog_api_key" {
+  description = "Datadog API Key (sensitive)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "datadog_site" {
+  description = "Datadog site (datadoghq.com, datadoghq.eu, etc.)"
+  type        = string
+  default     = "datadoghq.com"
+}
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster for Datadog tagging"
+  type        = string
+  default     = "eks-cluster"
+}

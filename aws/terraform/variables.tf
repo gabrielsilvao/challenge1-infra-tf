@@ -114,3 +114,23 @@ variable "ecr_repository_name" {
   type        = string
   default     = "sample-web-app"
 }
+
+# Datadog Variables
+variable "datadog_enabled" {
+  description = "Enable Datadog Operator installation"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_api_key" {
+  description = "Datadog API Key (sensitive - use TF_VAR_datadog_api_key or GitHub secret)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "datadog_site" {
+  description = "Datadog site (datadoghq.com, datadoghq.eu, etc.)"
+  type        = string
+  default     = "datadoghq.com"
+}

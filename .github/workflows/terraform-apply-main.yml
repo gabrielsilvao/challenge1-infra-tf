@@ -42,9 +42,17 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -input=false
+        env:
+          TF_VAR_datadog_enabled: ${{ secrets.DATADOG_ENABLED }}
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
+          TF_VAR_datadog_site: ${{ secrets.DATADOG_SITE }}
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve tfplan
+        env:
+          TF_VAR_datadog_enabled: ${{ secrets.DATADOG_ENABLED }}
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
+          TF_VAR_datadog_site: ${{ secrets.DATADOG_SITE }}
 
       - name: Upload apply outputs
         if: always()

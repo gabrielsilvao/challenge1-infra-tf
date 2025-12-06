@@ -46,6 +46,12 @@ module "helm_addons" {
   kong_chart_version          = var.kong_chart_version
   aws_region                  = var.region
 
+  # Datadog configuration
+  datadog_enabled  = var.datadog_enabled
+  datadog_api_key  = var.datadog_api_key
+  datadog_site     = var.datadog_site
+  cluster_name     = var.cluster_name
+
   depends_on = [module.eks]
 }
 

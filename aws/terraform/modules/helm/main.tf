@@ -122,3 +122,106 @@ EOT
 
   depends_on = [kubernetes_namespace.argocd]
 }
+
+# Datadog Namespace
+resource "kubernetes_namespace" "datadog" {
+  count = var.datadog_enabled ? 1 : 0
+
+  metadata {
+    name = var.datadog_namespace
+  }
+}
+
+# Datadog API Key Secret
+resource "kubernetes_secret" "datadog_api_key" {
+  count = var.datadog_enabled ? 1 : 0
+
+  metadata {
+    name      = "datadog-secret"
+    namespace = kubernetes_namespace.datadog[0].metadata[0].name
+  }
+
+  data = {
+    "api-key" = var.datadog_api_key
+  }
+
+  type = "Opaque"
+
+  depends_on = [kubernetes_namespace.datadog]
+}
+
+# Datadog Operator Helm Release
+resource "helm_release" "datadog_operator" {
+  count = var.datadog_enabled ? 1 : 0
+
+  name             = "datadog-operator"
+  repository       = "https://helm.datadoghq.com"
+  chart            = "datadog-operator"
+  namespace        = kubernetes_namespace.datadog[0].metadata[0].name
+  create_namespace = false
+  version          = var.datadog_operator_chart_version
+  timeout          = 600
+
+  depends_on = [kubernetes_namespace.datadog, kubernetes_secret.datadog_api_key]
+}
+
+# DatadogAgent Custom Resource
+resource "kubernetes_manifest" "datadog_agent" {
+  count = var.datadog_enabled ? 1 : 0
+
+  manifest = {
+    apiVersion = "datadoghq.com/v2alpha1"
+    kind       = "DatadogAgent"
+    metadata = {
+      name      = "datadog"
+      namespace = kubernetes_namespace.datadog[0].metadata[0].name
+    }
+    spec = {
+      global = {
+        clusterName = var.cluster_name
+        site        = var.datadog_site
+        credentials = {
+          apiSecret = {
+            secretName = kubernetes_secret.datadog_api_key[0].metadata[0].name
+            keyName    = "api-key"
+          }
+        }
+      }
+      features = {
+        apm = {
+          enabled = true
+        }
+        logCollection = {
+          enabled                    = true
+          containerCollectAll        = true
+          containerCollectUsingFiles = true
+        }
+        liveProcessCollection = {
+          enabled = true
+        }
+        liveContainerCollection = {
+          enabled = true
+        }
+        npm = {
+          enabled = true
+        }
+        otlp = {
+          receiver = {
+            protocols = {
+              grpc = {
+                enabled  = true
+                endpoint = "0.0.0.0:4317"
+              }
+              http = {
+                enabled  = true
+                endpoint = "0.0.0.0:4318"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [helm_release.datadog_operator, kubernetes_secret.datadog_api_key]
+}

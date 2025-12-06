@@ -75,3 +75,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -input=false
+        env:
+          TF_VAR_datadog_enabled: ${{ secrets.DATADOG_ENABLED }}
+          TF_VAR_datadog_api_key: ${{ secrets.DATADOG_API_KEY }}
+          TF_VAR_datadog_site: ${{ secrets.DATADOG_SITE }}
