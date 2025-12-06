@@ -70,10 +70,10 @@ variable "datadog_namespace" {
   default     = "datadog"
 }
 
-variable "datadog_operator_chart_version" {
-  description = "Datadog Operator Helm chart version"
+variable "datadog_chart_version" {
+  description = "Datadog Helm chart version"
   type        = string
-  default     = "1.4.0"
+  default     = "3.49.0"
 }
 
 variable "datadog_api_key" {

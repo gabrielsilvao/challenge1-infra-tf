@@ -150,78 +150,82 @@ resource "kubernetes_secret" "datadog_api_key" {
   depends_on = [kubernetes_namespace.datadog]
 }
 
-# Datadog Operator Helm Release
-resource "helm_release" "datadog_operator" {
+# Datadog Helm Release (includes Agent, not just Operator)
+resource "helm_release" "datadog" {
   count = var.datadog_enabled ? 1 : 0
 
-  name             = "datadog-operator"
+  name             = "datadog"
   repository       = "https://helm.datadoghq.com"
-  chart            = "datadog-operator"
+  chart            = "datadog"
   namespace        = kubernetes_namespace.datadog[0].metadata[0].name
   create_namespace = false
-  version          = var.datadog_operator_chart_version
+  version          = var.datadog_chart_version
   timeout          = 600
 
-  depends_on = [kubernetes_namespace.datadog, kubernetes_secret.datadog_api_key]
-}
-
-# DatadogAgent Custom Resource
-resource "kubernetes_manifest" "datadog_agent" {
-  count = var.datadog_enabled ? 1 : 0
-
-  manifest = {
-    apiVersion = "datadoghq.com/v2alpha1"
-    kind       = "DatadogAgent"
-    metadata = {
-      name      = "datadog"
-      namespace = kubernetes_namespace.datadog[0].metadata[0].name
-    }
-    spec = {
-      global = {
-        clusterName = var.cluster_name
-        site        = var.datadog_site
-        credentials = {
-          apiSecret = {
-            secretName = kubernetes_secret.datadog_api_key[0].metadata[0].name
-            keyName    = "api-key"
-          }
-        }
-      }
-      features = {
-        apm = {
-          enabled = true
-        }
-        logCollection = {
-          enabled                    = true
-          containerCollectAll        = true
-          containerCollectUsingFiles = true
-        }
-        liveProcessCollection = {
-          enabled = true
-        }
-        liveContainerCollection = {
-          enabled = true
-        }
-        npm = {
-          enabled = true
-        }
-        otlp = {
-          receiver = {
-            protocols = {
-              grpc = {
-                enabled  = true
-                endpoint = "0.0.0.0:4317"
-              }
-              http = {
-                enabled  = true
-                endpoint = "0.0.0.0:4318"
-              }
-            }
-          }
-        }
-      }
-    }
+  set {
+    name  = "datadog.apiKey"
+    value = var.datadog_api_key
   }
 
-  depends_on = [helm_release.datadog_operator, kubernetes_secret.datadog_api_key]
+  set {
+    name  = "datadog.site"
+    value = var.datadog_site
+  }
+
+  set {
+    name  = "datadog.clusterName"
+    value = var.cluster_name
+  }
+
+  # APM
+  set {
+    name  = "datadog.apm.portEnabled"
+    value = "true"
+  }
+
+  # Logs
+  set {
+    name  = "datadog.logs.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "datadog.logs.containerCollectAll"
+    value = "true"
+  }
+
+  # Process monitoring
+  set {
+    name  = "datadog.processAgent.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "datadog.processAgent.processCollection"
+    value = "true"
+  }
+
+  # OTLP receiver for OpenTelemetry
+  set {
+    name  = "datadog.otlp.receiver.protocols.grpc.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "datadog.otlp.receiver.protocols.http.enabled"
+    value = "true"
+  }
+
+  # Cluster Agent
+  set {
+    name  = "clusterAgent.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "clusterAgent.metricsProvider.enabled"
+    value = "true"
+  }
+
+  depends_on = [kubernetes_namespace.datadog, kubernetes_secret.datadog_api_key]
 }
