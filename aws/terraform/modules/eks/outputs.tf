@@ -31,7 +31,7 @@ output "cluster_certificate_authority_data" {
 
 output "node_group_id" {
   description = "EKS node group id"
-  value       = module.eks.eks_managed_node_groups["main"]["id"]
+  value       = module.eks.eks_managed_node_groups["main"].node_group_id
 }
 
 output "node_security_group_id" {
