@@ -28,6 +28,7 @@ resource "helm_release" "argocd" {
   namespace        = kubernetes_namespace.argocd.metadata[0].name
   create_namespace = false
   version          = var.argocd_chart_version
+  timeout          = 600
 
   values = [
     templatefile("${path.module}/values/argocd-values.yaml", {})
@@ -44,6 +45,7 @@ resource "helm_release" "argo_rollouts" {
   namespace        = kubernetes_namespace.argo_rollouts.metadata[0].name
   create_namespace = false
   version          = var.argo_rollouts_chart_version
+  timeout          = 600
 
   values = [
     templatefile("${path.module}/values/argo-rollouts-values.yaml", {})
@@ -60,6 +62,7 @@ resource "helm_release" "istio_base" {
   namespace        = kubernetes_namespace.istio.metadata[0].name
   create_namespace = false
   version          = var.istio_chart_version
+  timeout          = 300
 
   depends_on = [kubernetes_namespace.istio]
 }
@@ -71,6 +74,7 @@ resource "helm_release" "istio_discovery" {
   namespace        = kubernetes_namespace.istio.metadata[0].name
   create_namespace = false
   version          = var.istio_chart_version
+  timeout          = 600
 
   values = [
     templatefile("${path.module}/values/istio-discovery-values.yaml", {})
@@ -86,6 +90,9 @@ resource "helm_release" "istio_ingress" {
   namespace        = kubernetes_namespace.istio.metadata[0].name
   create_namespace = false
   version          = var.istio_chart_version
+  timeout          = 600
+  wait             = true
+  wait_for_jobs    = true
 
   values = [
     templatefile("${path.module}/values/istio-ingress-values.yaml", {})
