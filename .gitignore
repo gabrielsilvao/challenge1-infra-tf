@@ -1,0 +1,4 @@
+aws/terraform/backend/*.tfstate
+aws/terraform/backend/*.tfstate.backup
+aws/terraform/backend/.terraform/
+aws/terraform/backend/.terraform.lock.hcl
