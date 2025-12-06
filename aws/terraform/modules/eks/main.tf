@@ -27,6 +27,9 @@ module "eks" {
 
       disk_size = 30
 
+      # Disable CNI IAM attachment to avoid for_each circular dependency
+      iam_role_attach_cni_policy = false
+
       tags = var.tags
     }
   }
