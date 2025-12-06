@@ -115,8 +115,8 @@ resource "kubernetes_config_map" "ecr_login_script" {
 
   data = {
     "ecr-login.sh" = <<-EOF
-      #!/bin/sh
-      aws ecr get-login-password --region ${var.aws_region}
+    #!/bin/sh
+    aws ecr get-login-password --region ${var.aws_region}
     EOF
   }
 
