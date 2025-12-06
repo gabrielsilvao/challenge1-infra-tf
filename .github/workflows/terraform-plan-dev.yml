@@ -29,23 +29,13 @@ jobs:
           terraform_version: '1.5.7'
 
       - name: Terraform Format
-        run: terraform fmt -recursive .
+        run: terraform fmt -check -recursive .
 
       - name: Terraform Init
-        run: terraform init -input=false -backend=false
+        run: terraform init -input=false
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: |
-          terraform plan -out=tfplan -input=false
-          terraform show -json tfplan > tfplan.json
-
-      - name: Upload plan artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-dev
-          path: |
-            aws/terraform/tfplan
-            aws/terraform/tfplan.json
+        run: terraform plan -input=false
