@@ -7,6 +7,21 @@ image:
   repository: kong
   tag: "3.5"
 
+# Datadog annotations for metrics and logs collection
+podAnnotations:
+  ad.datadoghq.com/proxy.logs: '[{"source":"kong","service":"kong-proxy"}]'
+  ad.datadoghq.com/proxy.checks: |
+    {
+      "kong": {
+        "instances": [
+          {
+            "openmetrics_endpoint": "http://%%host%%:8100/metrics"
+          }
+        ]
+      }
+    }
+  ad.datadoghq.com/ingress-controller.logs: '[{"source":"kong","service":"kong-ingress-controller"}]'
+
 env:
   database: "off"
   router_flavor: traditional
@@ -19,6 +34,8 @@ env:
   admin_error_log: /dev/stderr
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
+  # Enable status endpoint for Datadog metrics
+  status_listen: "0.0.0.0:8100"
 
 ingressController:
   enabled: true
