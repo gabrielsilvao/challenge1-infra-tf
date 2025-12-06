@@ -130,7 +130,7 @@ variable "datadog_api_key" {
 }
 
 variable "datadog_site" {
-  description = "Datadog site (datadoghq.com, datadoghq.eu, etc.)"
+  description = "Datadog site (datadoghq.com, datadoghq.eu, us5.datadoghq.com, etc.)"
   type        = string
-  default     = "datadoghq.com"
+  default     = "us5.datadoghq.com"
 }
