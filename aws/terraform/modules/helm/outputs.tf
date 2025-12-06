@@ -26,8 +26,8 @@ output "argo_rollouts_release_status" {
 output "istio_release_status" {
   description = "Status of the Istio Helm releases"
   value = {
-    base       = helm_release.istio_base.status
-    discovery  = helm_release.istio_discovery.status
-    ingress    = helm_release.istio_ingress.status
+    base      = helm_release.istio_base.status
+    discovery = helm_release.istio_discovery.status
+    ingress   = helm_release.istio_ingress.status
   }
 }
