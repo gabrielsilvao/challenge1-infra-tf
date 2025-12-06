@@ -31,8 +31,6 @@ module "eks" {
     Environment = "dev"
     Terraform   = "true"
   }
-
-  depends_on = [module.vpc]
 }
 
 module "helm_addons" {
