@@ -29,15 +29,15 @@ configs:
 
 redis:
   enabled: true
-  # Datadog annotations for Redis
+  # Datadog annotations for Redis (container name is 'redis')
   podAnnotations:
     ad.datadoghq.com/redis.logs: '[{"source":"redis","service":"argocd-redis"}]'
 
 controller:
   replicas: 2
-  # Datadog annotations for ArgoCD Controller
+  # Datadog annotations for ArgoCD Controller (container name is 'application-controller')
   podAnnotations:
-    ad.datadoghq.com/argocd-application-controller.logs: '[{"source":"argocd","service":"argocd-controller"}]'
+    ad.datadoghq.com/application-controller.logs: '[{"source":"argocd","service":"argocd-controller"}]'
   metrics:
     enabled: true
     serviceMonitor:
@@ -45,9 +45,9 @@ controller:
 
 repoServer:
   replicas: 2
-  # Datadog annotations for Repo Server
+  # Datadog annotations for Repo Server (container name is 'repo-server')
   podAnnotations:
-    ad.datadoghq.com/argocd-repo-server.logs: '[{"source":"argocd","service":"argocd-repo-server"}]'
+    ad.datadoghq.com/repo-server.logs: '[{"source":"argocd","service":"argocd-repo-server"}]'
   metrics:
     enabled: true
     serviceMonitor:
@@ -56,6 +56,6 @@ repoServer:
 applicationSet:
   enabled: true
   replicas: 2
-  # Datadog annotations for ApplicationSet Controller
+  # Datadog annotations for ApplicationSet Controller (container name is 'applicationset-controller')
   podAnnotations:
-    ad.datadoghq.com/argocd-applicationset-controller.logs: '[{"source":"argocd","service":"argocd-applicationset"}]'
+    ad.datadoghq.com/applicationset-controller.logs: '[{"source":"argocd","service":"argocd-applicationset"}]'
