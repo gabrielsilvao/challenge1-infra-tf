@@ -47,3 +47,19 @@ module "helm_addons" {
 
   depends_on = [module.eks]
 }
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  repository_name = var.ecr_repository_name
+  scan_on_push    = true
+
+  enable_lifecycle_policy    = true
+  max_image_count            = 30
+  untagged_image_expiry_days = 14
+
+  tags = {
+    Environment = "dev"
+    Terraform   = "true"
+  }
+}

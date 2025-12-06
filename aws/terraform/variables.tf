@@ -107,3 +107,10 @@ variable "istio_chart_version" {
   type        = string
   default     = "1.18.0"
 }
+
+# ECR Variables
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+  default     = "sample-web-app"
+}
